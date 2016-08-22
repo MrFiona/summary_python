@@ -1,0 +1,87 @@
+字典是Python里面一种无序存储结构，存储的是键值对 key - value。关键字应该为不可变类型，如字符串、整数、包含不可变对象的元组。
+字典的创建很简单，用 d = {key1 : value2, key2 : value2}的形式就可以创建一个新的字典，当然也可以通过 dict 接受一个含有键，
+值的序列对或者关键字参数来创建字典。
+键可以是多种类型，但键是唯一的不重复的，值可以不唯一
+>>> d = {'a':1, 'b':2}  
+>>> d  
+{'b': 2, 'a': 1}  
+>>> L = [('Jonh',18), ('Nancy',19)]  
+>>> d = dict(L)  #通过包含键值的列表创建  
+>>> d  
+{'Jonh': 18, 'Nancy': 19}   
+>>> T = tuple(L)  
+>>> T  
+(('Jonh', 18), ('Nancy', 19))  
+>>> d = dict(T) #通过包含键值的元组创建  
+>>> d  
+{'Jonh': 18, 'Nancy': 19}  
+>>> d = dict(x = 1, y = 3)  #通过关键字参数创建  
+>>> d  
+{'x': 1, 'y': 3}  
+>>> d[3] = 'z'  
+>>> d  
+{3: 'z', 'x': 1, 'y': 3}  
+
+还有一个创建字典的方法就是 fromkeys(S [ , v]) python里的解释是 New dict with key from S and value equal to v ，即将S里的元素作为键，
+v作为所有键的值，v 的默认值为 None。可以通过已存在的字典 d 调用 d.fromkeys(S [, v] ) 也可以通过类型调用 dict.fromkeys( S [, v] )
+>>> d  
+{3: 'z', 'y': 3}  
+>>> L1 = [1,2,3]  
+>>> d.fromkeys(L1)  
+{1: None, 2: None, 3: None}  
+>>> {}.fromkeys(L1,'nothing')  
+{1: 'nothing', 2: 'nothing', 3: 'nothing'}  
+>>> dict.fromkeys(L1,'over')  
+{1: 'over', 2: 'over', 3: 'over'} 
+
+字典是无序的，所以不能通过索引来获取值，要通过键来找到关联值。对于不存在的键，会出现错误KeyError
+>>> d  
+{3: 'z', 'x': 1, 'y': 3}  
+>>> d[3]  
+'z'  
+>>> d['x']  
+1  
+>>> d[0]  
+Traceback (most recent call last):  
+  File "<pyshell#26>", line 1, in <module>  
+    d[0]  
+KeyError: 0
+
+字典操作和方法：
+len( d )  返回字典d里面的键值对数目
+x in d   查询字典d中是否有键 x
+d [ x ] = y  若键 x 存在，则修改 x 对应的值为 y， 若键 x 不存在，则在字典 d 中增加键值对 x : y
+del d[x]  删除字典 d 中键为 x 的键值对，若 x 不存在会出现 KeyError
+d.clear() 清空字典d
+d.copy() 对字典 d 进行浅复制，返回一个和d有相同键值对的新字典
+d.get( x [ , y]) 返回字典 d 中键 x 对应的值，键 x 不存在的时候返回 y， y 的默认值为None
+d.items() 将字典 d 中所有键值对以dict_items的形式返回（Python 2中d.iteritems() 返回一个针对键值对的迭代器对象，Python 3中没有 iteritems 方法了）
+>>> d = {'z': 5, 'x': 1.5, 'y': 3}  
+>>> d.items()  
+dict_items([('z', 5), ('x', 1.5), ('y', 3)])  
+>>> list(d.items())  
+[('z', 5), ('x', 1.5), ('y', 3)]  
+d.keys() 将字典 d 中所有的键以dict_keys形式返回（Python 2 中d.iterkeys() 返回一个针对键的迭代器对象，Python 3 没有此语法
+>>> d.keys()  
+dict_keys(['z', 'x', 'y'])  
+>>> for x in d.keys():  
+    print(x)  
+z  
+x  
+y  
+d.pop( x ) 返回给定键 x 对应的值，并将该键值对从字典中删除
+d.popitem( ) 返回并删除字典 d 中随机的键值对
+d.setdefault( x, [ , y ] )  返回字典 d 中键 x 对应的值，若键 x 不存在，则返回 y， 并将 x : y 作为键值对添加到字典中，y 的默认值为 None
+d.update( x ) 将字典 x 所有键值对添加到字典 d 中（不重复，重复的键值对用字典 x 中的键值对替代字典 d 中）
+>>> d1 = {'x':1, 'y':3}  
+>>> d2 = {'x':2, 'z':1.4}  
+>>> d1.update(d2)  
+>>> d1  
+{'z': 1.4, 'x': 2, 'y': 3} 
+d.values( ) 将字典里所有的值以dict_values 的形式返回（Python 2 中d.itervalues() 返回针对字典d里所有值的迭代器对象，Python 3无此语法）
+>>> d1  
+{'z': 1.4, 'x': 2, 'y': 3}  
+>>> d1.values()  
+dict_values([1.4, 2, 3])  
+>>> list(d1.values())  
+[1.4, 2, 3]  
