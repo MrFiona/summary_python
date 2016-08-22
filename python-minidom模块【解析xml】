@@ -1,0 +1,187 @@
+1，xml的文档结构
+1.1，XML文档包括XML头信息和XML信息体
+1.1.1，XML文档头信息
+[html] view plain copy
+<?xml version="1.0" encoding="utf-8"?>  
+它表明了此XML文档所用的版本，编码方式。有些复杂的还有一些文档类型的定义(DOCTYPE)，用于定义此XML文档所用的DTD或Schema和一些实体的定义。
+
+1.1.2，XML文档信息体
+[html] view plain copy
+<Table>  
+    <Name>  
+        tbl_test  
+    </Name>  
+    <Comment>  
+        This ia a test table  
+    </Comment>  
+    <Schema format="Json">  
+        </Schema>  
+</Table>  
+XML信息体是由树状元素组成。每个XML文档都有一个文档元素，也就是树的根元素，所有其它的元素和内容都包含在根元素中。
+DOM是Document Object Model的简称，它是以对象树来表示一个XML文档的方法，使用它的好处就是你可以非常灵活的在对象中进行遍历。
+
+2，minidom模块读取XML
+按照我的理解，在获得XML文档树的根节点后，实际上分为两种节点【这里测试只用到这两种节点，实际按照nodeType知道还有其他很多】：元素节点（ELEMENT NODE）和文本节点（TEXT NODE）。元素节点如上面的Name标签，整个就是一个元素节点。文本节点如上面的tbl_test，也作为一个节点，即文本节点。
+
+节点都具有这样三种属性;   
+
+node.nodeName	nodeName为结点名字
+node.nodeValue	nodeValue是结点的值，只对文本结点有效
+node.nodeType	nodeType是结点的类型
+元素节点（ELEMENT NODE）可以用root.getElementsByTagName("Table")这样来获取以Table标签的一个列表。
+
+文本节点（TEXT NODE）         可以用column.getAttribute('Name')这样来获取Name的这样一个属性值。属性指的是: <Column Name="pt" Value="1"/>这样的结构。可以使用node.data或者node.nodeValue来获取文本值。
+
+2.1，得到dom对象
+从xml文件得到dom对象
+[plain] view plain copy
+>>> import xml.dom.minidom  
+>>> dom = xml.dom.minidom.parse('d:/catalog.xml')  
+从xml字符串得到dom对象
+[plain] view plain copy
+>>> import xml.dom.minidom  
+>>> dom = xml.dom.minidom.parseString(xmlstring)  
+
+2.2，得到文档元素对象
+[plain] view plain copy
+>>> root = dom.documentElement  
+
+
+3，测试
+3.1，实验1
+[html] view plain copy
+<?xml version="1.0" encoding="UTF-8"?>  
+<Table>  
+    <Name>  
+        tbl_test  
+    </Name>  
+    <Comment>  
+        This ia a test table  
+    </Comment>  
+    <Schema format="Json">  
+        </Schema>  
+</Table>  
+
+[python] view plain copy
+dom = parseString(string1)  
+#root = dom.documentElement  
+table  =  dom.getElementsByTagName( "Table" )[0]  
+name  =  table.getElementsByTagName( "Name" )[0]  
+for textNode in name.childNodes:  
+   print textNode.data  
+   print textNode.nodeValue  
+1，dom获得的是整个xml对象
+2，【未运行】root获得的整个文档对象，如果执行了，实际上得到的是根节点唯一的标签<Table></Table>下的东西，如果有多个<Table></Table>，估计会忽略，默认把第一个当成根。
+
+3，root.getElementsByTagName( "Table" )将获得所有<Table></Table>标签对，这是一个类似于列表的东西，可以用列表方法获取。因为这里就一个<Table></Table>标签，所以直接[0]返回这个单独的对象。
+
+4，table获得的是真正的单个的其中的<table></Table>对象。
+
+5，table.getElementsByTagName( "Name" )同样获得的是一个[<Name></Name>,...,<Name></Name>]这样的列表。
+
+6，name获得的是单个的现在仅有的<Name></Name>对象。
+
+7，由于name下面是文本节点tbl_test。虽然只有一个，但可以有多个。此时，前述的都是元素节点，Name标签下都是文本节点了，可以用name.childNodes获得文本节点列表，注意，还是列表。
+
+8，textNode是其中的唯一的一个tbl_test。
+
+9，因为是文本节点，所有有data属性。当然其，node.nodeValue也可以读到。
+
+
+3.2，实验2
+[html] view plain copy
+<?xml version="1.0" encoding="UTF-8"?>  
+<Partitions>  
+    <Partition>  
+        <Column Name="pt" Value="1"/>  
+    </Partition>  
+</Partitions>  
+
+[python] view plain copy
+dom = parseString(string2)  
+#root = dom.documentElement  
+partitions = dom.getElementsByTagName("Partitions")[0]  
+partition = partitions.getElementsByTagName("Partition")[0]  
+column = partition.getElementsByTagName("Column")[0]  
+print column.getAttribute('Name')  
+1，dom获得的是整个xml对象
+
+2，【未运行】root获得的整个文档对象，如果执行了，实际上得到的是根节点唯一的标签<Table></Table>下的东西，如果有多个<Partitions></Partitions>，估计会忽略，默认把第一个当成根。
+
+3，root.getElementsByTagName( "Partitions" )将获得所有<Partitions></Partitions>标签对，这是一个类似于列表的东西，可以用列表方法获取。因为这里就一个<Partitions></Partitions>标签，所以直接[0]返回这个单独的对象。
+
+4，partitions获得的是真正的单个的其中的<Partitions></Partitions>对象。
+
+5，partitions.getElementsByTagName( "Partition" )同样获得的是一个[<Partition></Partition>,...,<Partition></Partition>]这样的列表。
+
+6，partition获得的是单个的现在仅有的<Partition></Partition>对象。
+
+7，column以同样方式获取到单个的<Column></Column>对象
+
+8，由于Name是Column的一个属性，所以用column.getAttribute('Name')来获取这个属性值
+
+
+3.3，实验3
+[html] view plain copy
+string1='''<?xml version="1.0" encoding="UTF-8"?>  
+           <Table>  
+                 <Name>  
+                    tbl_test  
+                 </Name>  
+                 <Comment>  
+                        <Name>  
+                            gexing  
+                        </Name>  
+                        This ia a test table  
+                 </Comment>  
+                 <Schema format="Json">  
+                 </Schema>  
+                 <Name>  
+                       dandan  
+                 </Name>  
+                 </Table>  
+       '''  
+
+[python] view plain copy
+dom = parseString(string1)  
+    root = dom.documentElement  
+    names = root.getElementsByTagName("Name")  
+    for name in names:  
+        for child in name.childNodes:  
+            print child.nodeValue  
+
+输出：
+[plain] view plain copy
+[admin@r42h06016.xy2.aliyun.com]$python test.py  
+  
+                        tbl_test  
+  
+  
+                                gexing  
+  
+  
+                           dandan  
+
+注意点1，空行是因为实际上要的xml是无空格的内容。
+注意点2，说明用getElementsByTagName得到的list是遍历所有“节点”，然后不管哪个层次，遇到一个符合的就会加进来。如果没有文本信息，就输出None。
+
+
+3.4，简单函数
+对于简单的元素，如：<caption>Python</caption>，我们可以编写这样一个函数来得到它的内容（这里为Python）。
+
+[python] view plain copy
+def getTagText(root, tag):  
+    node = root.getElementsByTagName(tag)[0]  
+    rc = ""  
+    for node in node.childNodes:  
+    if node.nodeType in ( node.TEXT_NODE, node.CDATA_SECTION_NODE):  
+        rc = rc + node.data  
+    return rc  
+
+
+4，xml.etree.ElementTree模块读xml
+[python] view plain copy
+import xml.etree.ElementTree  
+content = xml.etree.ElementTree.fromstring(string1)  
+name = content.findall('Name')#找到所有的Name的列表  
+name = content.findtext('Name')#找到下一层的Name节点  
