@@ -128,7 +128,13 @@ if __name__ == '__main__':
 #  
 # %(message)s               用户输出的消息
 
-
+#logging模块日志级别
+#1 )、 Level:  CRITICAL Numeric value: 50 
+#2 )、 Level:  ERROR     Numeric value: 40
+#3 )、 Level:  WARNING Numeric value: 30 
+#4 )、 Level:  INFO          Numeric value: 20
+#5 )、 Level:  DEBUG      Numeric value: 10
+#6 )、 Level:  NOTSET    Numeric value: 0
 
 
         
