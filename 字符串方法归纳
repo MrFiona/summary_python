@@ -142,3 +142,15 @@ print '%s islower=%s' % (str,str.islower())
 print '%s isdigit=%s' % (str,str.isdigit())
 str='3423'
 print '%s isdigit=%s' % (str,str.isdigit())
+
+
+反转一个字符串
+>>> S = 'abcdefghijklmnop'
+>>> S[::-1]
+'ponmlkjihgfedcba'
+ 
+这种用法叫做three-limit slices
+
+除此之外，还可以使用slice对象，例如
+ 
+>>> 'spam'[slice(None, None, -1)]
