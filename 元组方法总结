@@ -1,0 +1,50 @@
+元组(tuple)
+元组为不可修改的列表
+一个元素的元组表示为 ( 1 , )
+[python] view plain copy print?
+>>> x = (1,)  
+>>> type(x)  
+<class 'tuple'>  
+>>> x = (1)  
+>>> type(x)  
+<class 'int'>  
+
+元组可转换成列表，反之亦然。
+内建的 tuple() 函数接受一个列表参数，并返回一个包含同样元素的元组，而 list() 函数接受一个元组参数并返回一个列表。
+从效果上看， tuple() 冻结列表，而 list() 融化元组。
+[python] view plain copy print?
+>>> x = [1,2,4,3,1]  
+>>> y = (1,2,4,3,1)  
+>>> type(x)  
+<class 'list'>  
+>>> type(y)  
+<class 'tuple'>  
+>>> z = tuple(x)  
+>>> z  
+(1, 2, 4, 3, 1)  
+>>> z = list(y)  
+>>> z  
+[1, 2, 4, 3, 1]  
+
+可以用列表 或 元组 进行一次多赋值：
+[python] view plain copy print?
+>>> L1 = (1,2,4)  
+>>> (x, y, z) = L1  
+>>> x  
+1  
+>>> y  
+2  
+>>> z  
+4  
+[python] view plain copy print?
+>>> L1 = [1,2,4]  
+>>> (x,y,z) = L1  
+>>> x  
+1  
+>>> y  
+2  
+>>> z  
+4  
+
+
+[] ，和 () 在布尔值中表示 False
