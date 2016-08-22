@@ -1,0 +1,102 @@
+使用配置文件形式：Python的logging.config.
+Python的logging模块接口仿log4j，概念上一致，使用上相当方便。利用logging.config.fileConfig()，可以将日志的配置用文件来描述，简化了日志的初始化。
+例程：
+# test.py
+import logging
+import logging.config
+
+logging.config.fileConfig("logging.conf")
+
+#create logger
+logger = logging.getLogger("example")
+
+#"application" code
+logger.debug("debug message")
+logger.info("info message")
+logger.warn("warn message")
+logger.error("error message")
+logger.critical("critical message")
+
+logHello = logging.getLogger("hello")
+logHello.info("Hello world!")
+
+配置文件示例如下：
+# logging.conf
+
+[loggers]
+keys=root,example
+
+[handlers]
+keys=consoleHandler,rotateFileHandler
+
+[formatters]
+keys=simpleFormatter
+
+[formatter_simpleFormatter]
+format=[%(asctime)s](%(levelname)s)%(name)s : %(message)s
+
+[logger_root]
+level=DEBUG
+handlers=consoleHandler,rotateFileHandler
+
+[logger_example]
+level=DEBUG
+handlers=consoleHandler,rotateFileHandler
+qualname=example
+propagate=0
+
+[handler_consoleHandler]
+class=StreamHandler
+level=DEBUG
+formatter=simpleFormatter
+args=(sys.stdout,)
+
+[handler_rotateFileHandler]
+class=handlers.RotatingFileHandler
+level=DEBUG
+formatter=simpleFormatter
+args=('test.log', 'a', 200000, 9)
+
+这样，会生成test.log.
+
+我一般是将logging等相关内容写在一个文件里，如下所示：
+module_mylog.py
+
+[python] view plain copy
+import os,sys  
+def mylog():  
+    import logging.config  
+    gLogger = logging.getLogger()  
+    logdir = "log/"  
+    logfile = "load.log"  
+    os.system("mkdir -p " + logdir)  
+    log_file = "./%s/%s"%(logdir,logfile)  
+    formatter = logging.Formatter('[%(asctime)s][%(levelname)s] %(message)s')  
+    handler = logging.StreamHandler(sys.stdout)  
+    handler.setFormatter(formatter)  
+    gLogger.addHandler(handler)  
+    formatter = logging.Formatter('[%(asctime)s][%(levelname)s] %(message)s')  
+    handler = logging.handlers.RotatingFileHandler(log_file)  
+    handler.setFormatter(formatter)  
+    gLogger.addHandler(handler)  
+    gLogger.setLevel(logging.INFO)  
+    return gLogger  
+gLogger = mylog()  
+其他任何文件要公用这个log时，都只需import就可以：
+A.py
+
+[python] view plain copy
+from module_mylog import gLogger  
+  
+if __name__ == "__main__":  
+    gLogger.info("A.py")  
+B.py
+
+[python] view plain copy
+from module_myverifylog import gLogger  
+  
+if __name__ == "__main__":  
+    gLogger.info("B.py")  
+
+不用担心其他文件都import它都会重新运行，实际上只会运行一次，这是当做全局变量来做的。这样A.py和B.py的log都会在一个日志里了。
+
