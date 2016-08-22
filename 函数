@@ -1,0 +1,183 @@
+def  定义函数
+
+def 函数名（参数列表):
+    语句块
+
+
+给函数添加文档字符串做注释：
+[python] view plain copy print?
+>>> def add(*argc):  
+    'cacluate the sum'  
+    sum = 0  
+    for x in argc:  
+        sum += x  
+    return sum  
+  
+>>> add(1,3,5)  
+9  
+>>> add.__doc__  
+'cacluate the sum'  
+返回值：没有指定的时候，函数会返回None
+
+Python的参数不用指定类型，因为类型可以很自由地转换
+Python的函数没有所谓的引用，所有参数都是传副本，你不能通过函数来修改原来的变量
+
+如果你确实想要修改变量，你只能靠 return 来返回新值，并将新值赋给你的变量
+[python] view plain copy print?
+>>> x = 2  
+>>> def add(x):  
+    x += 1  
+    return x  
+  
+>>> x = add(x)  
+>>> x  
+3  
+
+Python的函数参数分为位置参数和关键字参数
+[python] view plain copy print?
+>>> def show(name,age):  
+    print("name is %s, age is %d" % (name,age))  
+  
+      
+>>> show("Jonh",16) #位置参数，和严格对应参数位置  
+name is Jonh, age is 16  
+>>> show(age = 15,name = "Alice") #关键字参数，即使位置打乱了也没关系  
+name is Alice, age is 15  
+
+
+你也可以设置默认值，有默认值的要放后面
+[python] view plain copy print?
+>>> def show(name,age = 18):  
+    print("name is %s, age is %d" % (name,age))  
+  
+      
+>>> show("Bob")  
+name is Bob, age is 18  
+
+你也可以提供不定参数，其实前面我们已经看过了，就是在参数名字前加上 * 号就可以了
+[python] view plain copy print?
+>>> def add(*argc):  
+    'cacluate the sum'  
+    sum = 0  
+    for x in argc:  
+        sum += x  
+    return sum  
+
+
+如果是不定的关键字参数呢?使用**，但函数会收集这些参数并作为字典处理
+[python] view plain copy print?
+>>> def show(**ar):  
+    print(ar)  
+  
+      
+>>> show(x=1, y=2, z=3)  
+{'x': 1, 'y': 2, 'z': 3}  
+
+
+改变全局变量的方法--你告诉函数这是一个全局变量
+[python] view plain copy print?
+>>> x = 1  
+>>> def change():  
+    global x  
+    x += 1  
+  
+      
+>>> change()  
+>>> x  
+2  
+
+Python 也是可以递归的哦
+[python] view plain copy print?
+>>> def fib(n):  
+    if n == 1:  
+        return 1  
+    elif n == 2:  
+        return 2  
+    else:  
+        return fib(n-1) + fib(n-2)  
+  
+      
+>>> fib(5)  
+8  
+
+
+lambda 匿名函数
+lambda 语句中，冒号前是参数，可以有多个，用逗号隔开，冒号右边的返回值。
+[python] view plain copy print?
+>>> m = lambda x,y: x*y  
+>>> m(2,3)  
+6  
+
+functools：map filter reduce
+
+map
+map 接收一个函数和一个可迭代对象（如列表）作为参数，用函数处理每个元素，然后返回新的列表。
+map(func,*iterables)
+[python] view plain copy print?
+>>> x = map(lambda x: x*x, l)  
+>>> list(x)  
+[1, 4, 9]  
+
+filter
+filter将 function 依次作用于 iterable 的每个元素，如果返回值为true, 保留元素，否则从iterable里面删除
+filter(function, iterable)
+[python] view plain copy print?
+>>> l = [1,2,3,4,5,6]  
+>>> m = lambda x: x %2 == 0  
+>>> k = filter(m,l)  
+>>> k  
+<filter object at 0x022AEC70>  
+>>> list(k)  
+[2, 4, 6]  
+
+exec() 可以执行字符串的语句，也就是说，你可以提交一个字符串，然后用exec来执行它
+[python] view plain copy print?
+>>> exec ('print("HelloWorld")')  
+HelloWorld  
+exec 很强大，但是明显会带来一些安全漏洞还有一些命名空间的冲突
+如果你用于与用户交互...噢，你确定你的用户会提交什么代码吗？
+[python] view plain copy print?
+>>> from math import sqrt  
+>>> exec ('sqrt = 1')  
+>>> sqrt(4) #这还能用吗？  
+Traceback (most recent call last):  
+  File "<pyshell#64>", line 1, in <module>  
+    sqrt(4) #这还能用吗？  
+TypeError: 'int' object is not callable  
+>>> s = 'HeloWorld'  
+>>> x = input("请输入命令：")  
+请输入命令：del s  
+>>> exec (x)  
+>>> print(s)  
+Traceback (most recent call last):  
+  File "<pyshell#68>", line 1, in <module>  
+    print(s)  
+NameError: name 's' is not defined  
+
+exec 是将字符串作为语句执行，而eval 就是将字符串作为表达式计算的
+[python] view plain copy print?
+>>> eval ('1+2')  
+3  
+>>> x = 12  
+>>> eval ('x*x + 1')  
+145  
+
+chr(n) 当传入序号时，返回n所代表的包含一个字符的字符串(0<=n<=256)
+[python] view plain copy print?
+>>> chr(67)  
+'C'  
+
+enumerate(seq)  产生用于迭代的（索引，值）对
+[python] view plain copy print?
+>>> L = ['a','c','b']  
+>>> d = enumerate(L)  
+>>> d  
+<enumerate object at 0x024C54B8>  
+>>> for k,v in d:  
+    print(k,v)  
+  
+      
+0 a  
+1 c  
+2 b  
+
