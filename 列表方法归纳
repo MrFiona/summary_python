@@ -5,7 +5,7 @@ extend(L)追加一个列表，等价于+=
 insert(i,x)在位置i插入x，其余元素向后推，如果i大于列表长度，就在最后添加，如果i小于0，就在最开始添加
 remove(x)删除第一个值为x的元素，如果不存在会抛出异常
 reverse()反转序列
-pop([i])返回并删除位置为i的元素，i默认为最后一个元素
+pop([i])返回并删除位置为i的元素，i默认为最后一个元素。pop 会做两件事:删除 list 的最后一个元素, 然后返回删除元素的值。
 index(x)返回x在列表中第一次出现的位置，不存在则抛出异常
 count(x)返回x出现的次数
 sort()排序
@@ -58,6 +58,30 @@ Out[7]: [1, 4, 3, 2, 5, 6]
 上面是我在ipython中运行的代码，其中的 lambda x,y:x if y in x else x + [y] 等价于 lambda x,y: y in x and x or x+[y] 
 思路其实就是先把ids变为[[], 1,4,3,......] ,然后在利用reduce的特性。
 
+本文实例总结了Python实现list反转的方法。分享给大家供大家参考。具体实现方法如下：
+下面有几个不同实现的函数
+import math
+def resv(li):
+    new = []
+    if li:
+        cnt = len(li)
+        for i in range(cnt):
+            new.append(li[cnt-i-1])
+    return new
+def resv2(li):
+    li.reverse()
+    return li
+def resv3(li):
+    hcnt = int(math.floor(len(li)/2))
+    tmp = 0
+    for i in range(hcnt):
+        tmp = li[i]
+        li[i] = li[-(i+1)]
+        li[-(i+1)] = tmp
+    return li
+li = [1, 2, 3, 4, 5]
+print resv(li)
+ps: resv2() 方法会改变原来list的排序，其它则不会
 
 
 
