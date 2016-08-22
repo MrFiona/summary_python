@@ -1,0 +1,156 @@
+条件：
+if 条件:
+    语句块
+elif:
+    语句块
+else:
+    语句块
+
+elif 表示 else if
+
+这居然是合法的！！！1 < x < 2！！！
+[python] view plain copy print?
+>>> if 1 < x < 2:  
+    print('True')  
+  
+      
+True  
+
+and 表示且
+[python] view plain copy print?
+>>> if x > 1 and x < 2:  
+    print('True')  
+  
+      
+True  
+
+or 表示 或
+[python] view plain copy print?
+>>> x  
+2  
+>>> if x == 2 or x == 3:  
+    print(x)  
+  
+      
+2  
+
+如果 b 为真则返回a，否则返回 c
+a  if  b  else  c
+[python] view plain copy print?
+>>> 'True' if 1 < x <2 else 'False'  
+'True'  
+
+while 循环
+while 条件:
+   语句块
+
+不需要括号哦！
+[python] view plain copy print?
+>>> x  
+1.2  
+>>> while x < 2:  
+    print(x)  
+    x += 0.2  
+  
+      
+1.2  
+1.4  
+1.5999999999999999  
+1.7999999999999998  
+1.9999999999999998  
+>>>  
+
+经常用 ：
+[python] view plain copy print?
+while True:  
+    ....  
+    if ... :  
+        break  
+    ....  
+
+
+for 循环
+for something in XXXX:
+    语句块
+
+即表示对XXXX中的每一个元素，执行某些语句块，XXXX可以是列表，字典，元组，迭代器等等。
+[python] view plain copy print?
+>>> for x in range(0,10):  
+    print(x*x)  
+  
+      
+0  
+1  
+4  
+9  
+16  
+25  
+36  
+49  
+64  
+81  
+这是 for..else...语句
+仅在没有 break 的情况下执行，或者说，只要你没有 break，它就会执行
+
+[python] view plain copy print?
+>>> for n in range(99,81,-1):  
+    root = sqrt(n)  
+    if root == int(root):  
+        print (n)  
+        break  
+else:  
+    print ("I didn't fint it")  
+  
+      
+I didn't fint it  
+
+但你应该尽可能使用列表推导式，因为它更方便，清晰
+[python] view plain copy print?
+>>> [x*x for x in range(1,5)]  
+[1, 4, 9, 16]  
+>>> [x**2 for x in range(1,10) if x % 2 ==0]  
+[4, 16, 36, 64]  
+>>> [(x,y) for x in range(1,3) for y in range(4,6)]  
+[(1, 4), (1, 5), (2, 4), (2, 5)]  
+
+断言 assert
+后面语句为真，否则出现 AssertionError
+[python] view plain copy print?
+>>> x  
+1.2  
+>>> assert x > 1  
+>>> assert x > 2  
+Traceback (most recent call last):  
+  File "<pyshell#61>", line 1, in <module>  
+    assert x > 2  
+AssertionError  
+>>> assert x > 2, 'x must bigger than 2'  
+Traceback (most recent call last):  
+  File "<pyshell#64>", line 1, in <module>  
+    assert x > 2, 'x must bigger than 2'  
+AssertionError: x must bigger than 2  
+>>>   
+
+pass
+pass 表示这里什么都没有，不执行任何操作
+如果你的程序还有未完成的函数和类等，你可以先添加一些注释，然后代码部分仅仅写一个 pass，这样程序可以运行不会报错，而后期你可以继续完善你的程序
+[python] view plain copy print?
+>>> class Nothing:  
+    pass  
+  
+>>>   
+
+del
+del 删除的只是引用和名称，并不删除值，也就是说，Python 会自动管理内存，负责内存的回收，这也是 Python 运行效率较低的一个原因吧
+[python] view plain copy print?
+>>> x = [1,2,3]  
+>>> y = x    #x 和 y指向同一个列表  
+>>> del x  
+>>> x  
+Traceback (most recent call last):  
+  File "<pyshell#41>", line 1, in <module>  
+    x  
+NameError: name 'x' is not defined  
+>>> y  
+[1, 2, 3]  
+
