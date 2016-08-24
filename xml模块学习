@@ -158,3 +158,69 @@ for user in user_list:
 # 注释                8
 # 文档                9
 #     
+输出结果：
+users
+#document
+users
+6
+user_nodes:	 [<DOM Element: user at 0x2281b20>, <DOM Element: user at 0x228e3f0>, <DOM Element: user at 0x228ecb0>, <DOM Element: user at 0x2297170>, <DOM Element: user at 0x2297300>, <DOM Element: user at 0x2297490>]
+123456  2
+dd user None
+dd user None
+dd user None
+dd user None
+dd user None
+dd user None
+dd user None
+dd user None
+dd user None
+dd user None
+dd user None
+dd user None
+-------------------------------------------------------------------------------------
+No:	        1000001
+passwd:	123456
+name:	Admin
+email:	admin@live.cn
+age:	        23
+sex:	         boy
+-------------------------------------------------------------------------------------
+No:	        1000002
+passwd:	123456
+name:	Admin2
+email:	admin2@live.cn
+age:	        22
+sex:	         boy
+-------------------------------------------------------------------------------------
+No:	        1000003
+passwd:	123456
+name:	Admin3
+email:	admin3@live.cn
+age:	        27
+sex:	         boy
+-------------------------------------------------------------------------------------
+No:	        1000004
+passwd:	123456
+name:	Admin4
+email:	admin4@live.cn
+age:	        25
+sex:	        girl
+-------------------------------------------------------------------------------------
+No:	        1000005
+passwd:	111
+name:	Admin5
+email:	admin5@live.cn
+age:	        20
+sex:	         boy
+-------------------------------------------------------------------------------------
+No:	        1000006
+passwd:	222
+name:	Admin6
+email:	admin6@live.cn
+age:	        23
+sex:	        girl
+
+
+
+
+
