@@ -114,3 +114,10 @@ datetime.datetime(2011, 3, 15, 13, 19, 32, 264194)
 >>> datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") 格式化
 '2011-03-15 13:19:27'
 >>>
+
+
+
+
+
+
+
