@@ -32,3 +32,10 @@ mainloop()
 #为了在某个组件上安装垂直和水平滚动条，需要做两件事：
 #1、设置该组件的yscrollbarcommand选项为Srcollbar组件的set()方法)
 #2、设置Scrollbar组件的command选项为该组件的xview()和yview()方法
+
+
+
+
+
+
+
