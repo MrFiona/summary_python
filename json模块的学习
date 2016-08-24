@@ -1,0 +1,214 @@
+JSON-是一个轻量级的数据交换格式。点击打开百度百科 JSON维基百科：http://zh.wikipedia.org/wiki/JSON
+
+json模块
+关于json的官方文档：点击打开链接
+本文由@The_Third_Wave（Blog地址：http://blog.csdn.net/zhanh1218）原创。不定期更新，有错误请指正。
+
+Sina微博关注：@The_Third_Wave 
+
+如果这篇博文对您有帮助，为了好的网络环境，不建议转载，建议收藏！如果您一定要转载，请带上后缀和本文地址。
+
+dump
+        dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, encoding='utf-8', default=None, sort_keys=False, **kw)
+
+        Serialize ``obj`` as a JSON formatted stream to ``fp`` (a ``.write()``-supporting file-like object).
+        # 序列化obj为JSON格式的流写入fp（file-like object）。
+        If ``skipkeys`` is true then ``dict`` keys that are not basic types (``str``, ``unicode``, ``int``, ``long``, ``float``, ``bool``, ``None``) will be skipped instead of raising a ``TypeError``.
+        skipkeys为真时，dict的keys不是基础类型（``str``, ``unicode``, ``int``, ``long``, ``float``, ``bool``, ``None``）的一种则不会抛出TypeError`异常，而是被忽略！
+[python] view plain copy 在CODE上查看代码片派生到我的代码片
+>>> a = {"中国": 1, "china": 11, "北京天安门": 111, ("tuple",): 1111}  
+>>> json.dumps(a)  
+  
+Traceback (most recent call last):  
+  File "<pyshell#67>", line 1, in <module>  
+    json.dumps(a)  
+  File "C:\Python27\lib\json\__init__.py", line 243, in dumps  
+    return _default_encoder.encode(obj)  
+  File "C:\Python27\lib\json\encoder.py", line 207, in encode  
+    chunks = self.iterencode(o, _one_shot=True)  
+  File "C:\Python27\lib\json\encoder.py", line 270, in iterencode  
+    return _iterencode(o, 0)  
+TypeError: keys must be a string  
+>>> print json.dumps(a, skipkeys = True, ensure_ascii = False, encoding = "gb2312")  
+{"北京天安门": 111, "中国": 1, "china": 11}  
+>>>   
+         【2014.05.28备注：很多人都不知道怎么打印有中文的字典，上面就是活生生的例子。不单独编码是打印不出来的。除非自己写个方法，但是有json为什么不用呢？】
+    If ``ensure_ascii`` is true (the default), all non-ASCII characters in the output are escaped with ``\uXXXX`` sequences, and the result is a ``str`` instance consisting of ASCII characters only.  If ``ensure_ascii`` is ``False``, some chunks written to ``fp`` may be ``unicode`` instances. This usually happens because the input contains unicode strings or the ``encoding`` parameter is used. Unless ``fp.write()`` explicitly understands ``unicode`` (as in ``codecs.getwriter``) this is likely to cause an error.
+        ensure_ascii为真（默认）时：所有在输出中的非ASCII字符都将转为ascii字符（也就是说结果是1个只包含ASCII字符的str实例），如果不能正确转码（中文之类的）则抛出异常！
+        ensure_ascii为假时：一些写入fp的块可能为Unicode实例。这通常是因为输入包含Unicode字符串或编码参数设置所致。除非“fp.write()清楚地知道这是Unicode字符串（如同codecs.getwriter），否则可能会导致错误。
+[python] view plain copy 在CODE上查看代码片派生到我的代码片
+>>> a = {u"中国": 1, "china": 11}  
+>>> json.dumps(a)  
+'{"\\u00d6\\u00d0\\u00b9\\u00fa": 1, "china": 11}'  
+>>> a = {"中国": 1, "china": 11}  
+>>> json.dumps(a)  
+  
+Traceback (most recent call last):  
+  File "<pyshell#35>", line 1, in <module>  
+    json.dumps(a)  
+  File "C:\Python27\lib\json\__init__.py", line 243, in dumps  
+    return _default_encoder.encode(obj)  
+  File "C:\Python27\lib\json\encoder.py", line 207, in encode  
+    chunks = self.iterencode(o, _one_shot=True)  
+  File "C:\Python27\lib\json\encoder.py", line 270, in iterencode  
+    return _iterencode(o, 0)  
+UnicodeDecodeError: 'utf8' codec can't decode byte 0xd6 in position 0: invalid continuation byte  
+>>> json.dumps(a, encoding = "gb2312")  
+'{"\\u4e2d\\u56fd": 1, "china": 11}'  
+        If ``check_circular`` is false, then the circular reference check for container types will be skipped and a circular reference will result in an ``OverflowError`` (or worse).
+        check_circular为false时：循环引用检查容器类型将被跳过，循环引用将导致一个overflowerror异常（或更糟）。
+        If ``allow_nan`` is false, then it will be a ``ValueError`` to serialize out of range ``float`` values (``nan``, ``inf``, ``-inf``) in strict compliance of the JSON specification, instead of using the JavaScript equivalents (``NaN``, ``Infinity``, ``-Infinity``).
+        allow_nan为false时：【暂不理解】
+        If ``indent`` is a non-negative integer, then JSON array elements and  object members will be pretty-printed with that indent level. An indent level of 0 will only insert newlines. ``None`` is the most compact representation.  Since the default item separator is ``', '``,  the output might include trailing whitespace when ``indent`` is specified. You can use ``separators=(',', ': ')`` to avoid this.
+        indent：格式化输出！默认None为最紧凑的格式。只能为非负整数，设置为0的时候为换行！和separators结合起来使用！
+        If ``separators`` is an ``(item_separator, dict_separator)`` tuple then it will be used instead of the default ``(', ', ': ')`` separators. ``(',', ':')`` is the most compact JSON representation.
+[python] view plain copy 在CODE上查看代码片派生到我的代码片
+>>> a = {"中国": 1, "china": 11, "北京天安门": 111}  
+>>> print json.dumps(a, ensure_ascii = False, encoding = "gb2312", indent = None)  
+{"北京天安门": 111, "中国": 1, "china": 11}  
+>>> print json.dumps(a, ensure_ascii = False, encoding = "gb2312", indent = 0)  
+{  
+"北京天安门": 111,   
+"中国": 1,   
+"china": 11  
+}  
+>>> print json.dumps(a, ensure_ascii = False, encoding = "gb2312", indent = 4)  
+{  
+    "北京天安门": 111,   
+    "中国": 1,   
+    "china": 11  
+}  
+>>> print json.dumps(a, ensure_ascii = False, encoding = "gb2312", indent = 4, separators = (',',':'))  
+{  
+    "北京天安门":111,  
+    "中国":1,  
+    "china":11  
+}  
+>>>   
+         separators 压缩数据！
+[python] view plain copy 在CODE上查看代码片派生到我的代码片
+>>> len(json.dumps(a, ensure_ascii = False, encoding = "gb2312", indent = 4, separators = None))  
+52  
+>>> len(json.dumps(a, ensure_ascii = False, encoding = "gb2312", indent = 4, separators = (',',':')))  
+47  
+>>>   
+         ``encoding`` is the character encoding for str instances, default is UTF-8.
+        编码！上面有演示！
+        ``default(obj)`` is a function that should return a serializable version  of obj or raise TypeError. The default simply raises TypeError.
+        default(obj)是一个应该返回obj序列化版本的函数or抛出TypeError异常。默认None为简单地抛出异常。也就是把任意不能序列化的对象写个函数变为可序列化为JSON的对象。【PS：暂时还用不上，后续更新】
+        If *sort_keys* is ``True`` (default: ``False``), then the output of dictionaries will be sorted by key.
+        字典排序！默认是False（不排序）。
+        To use a custom ``JSONEncoder`` subclass (e.g. one that overrides the ``.default()`` method to serialize additional types), specify it with  the ``cls`` kwarg; otherwise ``JSONEncoder`` is used.
+dumps  
+    dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, encoding='utf-8', default=None, sort_keys=False, **kw)
+        Serialize ``obj`` to a JSON formatted ``str``.
+        序列化obj为一个json字符串！
+load 
+    load(fp, encoding=None, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, object_pairs_hook=None, **kw)
+        Deserialize ``fp`` (a ``.read()``-supporting file-like object containing a JSON document) to a Python object.
+        # 反序列化fp( 包含JSON结构的file-like object)为Python对象！
+        If the contents of ``fp`` is encoded with an ASCII based encoding other than utf-8 (e.g. latin-1), then an appropriate ``encoding`` name must be specified. Encodings that are not ASCII based (such as UCS-2) are not allowed, and should be wrapped with ``codecs.getreader(fp)(encoding)``, or simply decoded to a ``unicode`` object and passed to ``loads()``
+        如果fp的内容是基于ASCII编码而不是UTF-8（如latin-1）则必须指定encoding的名字，。编码是不允许不是基于ASCII编码的（如UCS-2），而应该用`codecs.getreader(fp)(encoding)，或简单地解码为Unicode对象传递给loads()。 
+        ``object_hook`` is an optional function that will be called with the result of any object literal decode (a ``dict``). The return value of  ``object_hook`` will be used instead of the ``dict``. This feature can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+       object_hook 是将要被一些对象逐字解码（一个dict）的结果调用的一个可选的函数。object_hook的返回值将用来代替dict。将来可以使用此功能来实现自定义解码器。
+        ``object_pairs_hook`` is an optional function that will be called with the result of any object literal decoded with an ordered list of pairs.  The return value of ``object_pairs_hook`` will be used instead of the ``dict``. This feature can be used to implement custom decoders that rely on the order that the key and value pairs are decoded (for example, collections.OrderedDict will remember the order of insertion). If ``object_hook`` is also defined, the ``object_pairs_hook`` takes priority.
+        object_pairs_hook
+loads 
+    loads(s, encoding=None, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, object_pairs_hook=None, **kw)
+        Deserialize ``s`` (a ``str`` or ``unicode`` instance containing a JSON document) to a Python object.
+        反序列化s（一个JSON标准的str或者unicode实例）为Python对象。
+        If ``s`` is a ``str`` instance and is encoded with an ASCII based encoding other than utf-8 (e.g. latin-1) then an appropriate ``encoding`` name must be specified. Encodings that are not ASCII based (such as UCS-2)  are not allowed and should be decoded to ``unicode`` first.
+        如果s是一个str实例并且是基于ASCII编码而不是utf-8编码，则必须指定encoding的名字。 编码是不允许不是基于ASCII编码的（如UCS-2），并且首先解码为unicode      
+        ``parse_float``, if specified, will be called with the string of every JSON float to be decoded. By default this is equivalent to float(num_str). This can be used to use another datatype or parser for JSON floats (e.g. decimal.Decimal).
+        
+        ``parse_int``, if specified, will be called with the string of every JSON int to be decoded. By default this is equivalent to int(num_str). This can be used to use another datatype or parser for JSON integers (e.g. float).
+        
+        ``parse_constant``, if specified, will be called with one of the following strings: -Infinity, Infinity, NaN, null, true, false. This can be used to raise an exception if invalid JSON numbers are encountered.
+       
+JSON常见操作--dict、str相互转化
+[python] view plain copy 在CODE上查看代码片派生到我的代码片
+>>> d = {"a": 1, "b": 2, "c": 3}  
+>>> import json  
+>>> str_d = json.dumps(d)  
+>>> print str_d, type(str_d)  
+{"a": 1, "c": 3, "b": 2} <type 'str'>  
+>>> d_trans = json.loads(str_d)  
+>>> print d_trans, type(d_trans)  
+{u'a': 1, u'c': 3, u'b': 2} <type 'dict'>  
+>>>   
+
+json.dumps()方法的功能是把Python对象变为JSON字符串。loads()反序列化JSON字符串为相应的Python对象。对应为下图：
+JSON <--> Python object：
+[python] view plain copy 在CODE上查看代码片派生到我的代码片
+>>> d = {"a": 1, "c": 3, "b": 2}  
+>>> import json  
+>>> with open("C:\\Users\\admin\\Desktop\\111.txt", "w") as f:  
+    json.dump(d, f)  
+  
+      
+>>>   
+dump()方法的功能是把Python object写入到文件！注意到我们是写进一个file-like object而不是一个地址！load()对应为读取！
+[python] view plain copy 在CODE上查看代码片派生到我的代码片
+>>> with open("C:\\Users\\admin\\Desktop\\111.txt", "r") as f:  
+    d1 = json.load(f)  
+  
+      
+>>> d1  
+{u'a': 1, u'c': 3, u'b': 2}  
+>>>   
+题外：
+with as语句的妙用：避免打开文件后手写关闭文件代码，避免人为忘记写f.close()，避免使用try--except--finally导致的大量代码！
+
+小结
+1、为什么使用JSON：因为这是一种JSON是一种数据交换格式，意味着可以被N多语言读取；可以存在本地，避免数据多次处理；还可以通过socket和网络上其他计算机交换数据【这应用更科学】！
+2、Python序列化模块为pickle和Cpickle，方法和JSON差不多！但我推荐使用JSON！
+
+
+'''
+Created on 2016年8月24日
+
+@author: apple
+'''
+
+#coding:utf-8
+import os
+import json
+
+file = open('test.txt', 'w')
+file.write(u'这个是测试的信息!')
+file.close()
+dict1 ={1:'python周末培训班',2:'咨询010-68165761 QQ：1465376564'}
+
+print(dict1) 
+# 这样输出的没有显示汉字，是显示汉字的其它编码
+
+a = {"中国": 1, "china": 11, "北京天安门": 111}  
+a_dumps = json.dumps(a, skipkeys=False, ensure_ascii=False, check_circular=True, allow_nan=True, cls=None, \
+           indent=4, separators=(',',':'), default=None, sort_keys=None)
+print(a_dumps)
+print(type(a_dumps))
+file = open('json.log', 'a+')
+file.write(a_dumps)
+file.close()
+with open('json1.log', 'w') as f:
+    json.dump(a, f)
+with open('json1.log', 'r') as f:
+    d= json.load(f)
+    print(d)
+  
+  输出结果：
+  {1: 'python周末培训班', 2: '咨询010-68165761 QQ：1465376564'}
+{
+    "中国":1,
+    "北京天安门":111,
+    "china":11
+}
+<class 'str'>
+{'中国': 1, 'china': 11, '北京天安门': 111}
+json.log内容：
+{
+    "中国":1,
+    "北京天安门":111,
+    "china":11
+}
+json1.log内容：{"\u4e2d\u56fd": 1, "\u5317\u4eac\u5929\u5b89\u95e8": 111, "china": 11}
