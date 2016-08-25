@@ -1,0 +1,702 @@
+#学习自廖雪峰的博客  
+  
+#解决中文编码：  
+Import sys  
+reload(sys)   
+sys.setdefaultencoding('utf8')  
+  
+  
+cmp(x,y), x<y retun -1,== 0, > 1   
+#判断类型：isinstance('abc', str) = Ture  
+  
+类型转换：  
+>>> int('123')  
+>>> int(12.34)  
+>>> float('12.34')  
+>>> str(1.23)  
+>>> unicode(100)  
+>>> bool(1)  
+>>> bool('')  
+  
+a = abs,a 指向函数  
+a(-1) = 1  
+  
+#数据类型：  
+#整形，浮点，字符串，布尔（Ture，False）     a='abc',a.replce(‘a’,'A')是创建一个新的字符串反回  
+#运算符：and，or，not  
+#集合类型：  
+#1，list：定义l= ['a','b'],list有序，可增减  
+#    len(list),append('x'),insert(1,'x'),pop(),list[1] = 'x'，l.sort()  
+#   切片访问：l[0:3],l[-2:],前10个数，每两个取一个：l[:10:2],也可用于字符串  
+#2，tuple：定义t=（'a','b'），tuple和list一样，但不可增删改  
+#3，dict: 定义d = {'a'=1,'b'=2},访问d['key'],不存在会报错，所以'a'in d = Ture，d.get('a'),不存在返回None不报错  
+#   d.pop('a')  
+#4，set：定义 s = set([1,2,3]),set和dict类似只存key值，发生重复会过滤掉  
+  
+#列表生成公式：  
+>>> range(1, 11)  
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
+>>> [x * x for x in range(1, 11)]  
+[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]  
+>>> [m + n for m in 'ABC' for n in 'XYZ']  
+['AX', 'AY', 'AZ', 'BX', 'BY', 'BZ', 'CX', 'CY', 'CZ']  
+  
+#两个变量来生成list：  
+>>> d = {'x': 'A', 'y': 'B', 'z': 'C' }  
+>>> [k + '=' + v for k, v in d.iteritems()]  
+['y=B', 'x=A', 'z=C']  
+#字符串变成小写：  
+>>> L = ['Hello', 'World', 'IBM', 'Apple']  
+>>> [s.lower() for s in L]  
+['hello', 'world', 'ibm', 'apple']  
+  
+  
+#列表生成器续：内建generator  
+#要创建一个generator，有很多种方法。第一种方法很简单，只要把一个列表生成式的[]改成()，就创建了一个generator：  
+>>> L = [x * x for x in range(10)]生成list//如果[]变成()，则是生成generator，可用for遍历  
+>>> L  
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]  
+>>> g = (x * x for x in range(10))#g属于gennerater型  
+>>> g  
+<generator object <genexpr> at 0x104feab40>  
+  
+  
+  
+#函数：  
+#1，参数类型检查：  
+def myf(x):  
+    if not instance(x, (int, float)):  
+        raise TypeError('type error!')  
+      
+#2,多个返回值：定义默认参数要牢记一点：默认参数必须指向不变对象(非变量)！  
+def move(x,y,anlge=10):  
+    nx = x+math.cos(angle)  
+    ny = x+math.sin(angle)  
+    return nx,ny  
+nx,ny = move(4,6)#返回值两个是tuple(),tuple正好可以x，y = ('x','y')这样赋值  
+  
+  
+#3，不定个参数：*//最后的*p会独立组装成tuple  
+def myf(*p):  
+    sum = 0  
+    for n in p:  
+        sum = sum+p  
+    return sum  
+  
+a = myf(3,4,56,3),如传入l=[3,6,78] a=myf(*l)  
+  
+  
+  
+#4,关键字参数：**//最后的**kw会独立组装成dict，  
+def person(name, age, **ky):  
+    print 'name:', name, 'age:', age, 'other:', kw  
+  
+>>> kw = {'city': 'Beijing', 'job': 'Engineer'}  
+>>> person('Jack', 24, **kw)//或者person('Jack', 24, city= 'Beijing', job='Engineer')  
+name: Jack age: 24 other: {'city': 'Beijing', 'job': 'Engineer'}  
+  
+      
+#5迭代：  
+#判断能否用for ch in d 来迭代  
+>>> from collections import Iterable  
+>>> isinstance('abc', Iterable) # str是否可迭代  
+True  
+>>> isinstance([1,2,3], Iterable) # list是否可迭代  
+True  
+>>> isinstance(123, Iterable) # 整数是否可迭代  
+False  
+  
+>>> for x, y in [(1, 1), (2, 4), (3, 9)]:  
+...     print x, y  
+...  
+1 1  
+2 4  
+3 9  
+#遍历字典的kv，方法：iteritems()  
+>>> for k, v in d.iteritems():  
+...     print k, '=', v  
+  
+  
+#6高阶函数：  
+#一个函数就可以接收另一个函数作为参数  
+def add(x, y, f):  
+    return f(x) + f(y)  
+  
+map：  
+>>> def f(x):  
+...     return x * x  
+...  
+>>> map(f, [1, 2, 3, 4, 5, 6, 7, 8, 9])#函数内对列表每个参数调用一次f函数，对外部只算一次  
+    [1, 4, 9, 16, 25, 36, 49, 64, 81]  
+    >>> map(str, [1, 2, 3, 4, 5, 6, 7, 8, 9])#转换字符串  
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9']  
+#reduce：reduce把一个函数作用在一个序列[x1, x2, x3...]上，这个函数必须接收两个参数，reduce把结果继续和序列的下一个元素做累积计算  
+    reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4)  
+  
+>>> def fn(x, y):  
+...     return x * 10 + y  
+...  
+>>> reduce(fn, [1, 3, 5, 7, 9])  
+13579  
+  
+  
+#map和reduce：把str转换为int的函数：  
+>>> def fn(x, y):  
+...     return x * 10 + y  
+...  
+>>> def char2num(s):  
+...     return {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9}[s]  
+...  
+>>> reduce(fn, map(char2num, '13579'))  
+13579  
+  
+  
+#filter：和map()不同的时，filter()把传入的函数依次作用于每个元素，然后根据返回值是True还是False决定保留还是丢弃该元素。  
+#把一个序列中的空字符串删掉：  
+def not_empty(s):  
+    return s and s.strip()  
+filter(not_empty, ['A', '', 'B', None, 'C', '  '])  
+  
+  
+#sorted：sorted()函数也是一个高阶函数，它还可以接收一个比较函数来实现自定义的排序  
+def reversed_cmp(x, y):  
+    if x > y:  
+        return -1  
+    if x < y:  
+        return 1  
+    return 0  
+#传入自定义的比较函数reversed_cmp，就可以实现倒序排序：  
+  
+>>> sorted([36, 5, 12, 9, 21], reversed_cmp)  
+[36, 21, 12, 9, 5]  
+  
+>>> sorted([36, 5, 12, 9, 21])  
+[5, 9, 12, 21, 36]  
+  
+  
+#返回函数、闭包函数：  
+#当一个函数返回了一个函数后，其内部的局部变量还被新函数引用  
+def count():  
+    fs = []  
+    for i in range(1, 4):  
+        def f():  
+             return i*i  
+        fs.append(f)  
+    return fs  
+  
+f1, f2, f3 = count()  
+>>> f1()  
+9  
+>>> f2()  
+9  
+>>> f3()  
+9  
+#返回闭包时牢记的一点就是：返回函数不要引用任何循环变量，或者后续会发生变化的变量。  
+  
+  
+#关键字lambda：表示匿名函数，关键字lambda表示匿名函数，冒号前面的x表示函数参数。  
+#匿名函数有个限制，就是只能有一个表达式，不用写return，返回值就是该表达式的结果。  
+lambda x：x*x 相当于：  
+def f(x):  
+    return x * x  
+  
+  
+  
+  
+#模块：  
+  
+#Python本身就内置了很多非常有用的模块，只要安装完毕，这些模块就可以立刻使用。  
+import sys  
+#sys模块有一个argv变量，用list存储了命令行的所有参数。argv至少有一个元素，因为第一个参数永远是该.py文件的名称  
+hello.py  
+if __name__=='__main__':  
+    test()  
+#当我们在命令行运行hello模块文件时，Python解释器把一个特殊变量__name__置为__main__，而如果在其他地方导入该hello模块时，  
+#if判断将失败，因此，这种if测试可以让一个模块通过命令行运行时执行一些额外的代码，最常见的就是运行测试。  
+  
+  
+#访问权限：  
+#__xxx__这样的变量是特殊变量，可以被直接引用(public)，但是有特殊用途  
+#_xxx虽然我可以被访问，但是，请把我视为私有变量，不要随意访问(public)  
+#_xxx和__xxx这样的函数或变量就是非公开的（private）  
+  
+  
+  
+#类：可以多继承，其它特性类似java，如多态子类覆盖父类方法  
+class student(object): #继承object  
+  
+  
+#类型判断：type  
+>>> import types  
+>>> type('abc')==types.StringType  
+  
+isinstance：  
+>>> h = Husky()  
+>>> isinstance(h, Husky)  
+True  
+>>> isinstance('a', (str, unicode))  
+True  
+  
+  
+dir()  
+#如果要获得一个对象的所有属性和方法，可以使用dir()函数，它返回一个包含字符串的list  
+  
+#类似__xxx__的属性和方法在Python中都是有特殊用途的，比如__len__方法返回长度。在Python中，如果你调用len()函数试图获取一个对象的长度，  
+#实际上，在len()函数内部，它自动去调用该对象的__len__()方法，所以，下面的代码是等价的：  
+>>> len('ABC')  
+3  
+>>> 'ABC'.__len__()  
+3  
+  
+  
+#配合getattr()、setattr()以及hasattr()，我们可以直接操作一个对象的状态：  
+>>> getattr(obj, 'z', 404) # 获取属性'z'，如果不存在，返回默认值404  
+404  
+>>> hasattr(obj, 'x') # 有属性'x'吗？  
+True  
+>>> obj.x  
+9  
+>>> hasattr(obj, 'y') # 有属性'y'吗？  
+False  
+>>> setattr(obj, 'y', 19) # 设置一个属性'y'  
+>>> hasattr(obj, 'y') # 有属性'y'吗？  
+True  
+>>> getattr(obj, 'y') # 获取属性'y'  
+19  
+  
+#fn = getattr(obj, 'power') # 获取属性'power'并赋值到变量fn  
+#调用fn()  
+  
+  
+  
+__slots__  
+#创建了一个class的实例后，我们可以给该实例绑定任何属性和方法，这就是动态语言的灵活性  
+>>> class Student(object):  
+...     pass  
+...  
+>>> s = Student()  
+>>> s.name = 'Michael' # 动态给实例绑定一个属性  
+>>> print s.name  
+Michael  
+  
+>>> def set_age(self, age): # 定义一个函数作为实例方法  
+...     self.age = age  
+...  
+>>> from types import MethodType  
+>>> s.set_age = MethodType(set_age, s, Student) # 给实例绑定一个方法MethodType(方法名，实例，参数)  
+>>> s.set_age(25) # 调用实例方法  
+>>> s.age # 测试结果  
+25  
+  
+#也可以对类绑定，这样对所有实例起作用  
+>>> def set_score(self, score):  
+...     self.score = score  
+...  
+>>> Student.set_score = MethodType(set_score, None, Student)  
+  
+  
+#__slots__限制类的属性：（__slots__定义的属性仅对当前类起作用，对继承的子类是不起作用的）  
+>>> class Student(object):  
+...     __slots__ = ('name', 'age') # 用tuple定义允许绑定的属性名称  
+...  
+  
+#@property ：通过getter和setter方法  
+class Student(object):  
+ 
+    @property  
+    def birth(self):  
+        return self._birth  
+ 
+    @birth.setter#只设置setter方法  
+    def birth(self, value):  
+        self._birth = value  
+  
+  
+#自定义类：  
+  
+#__str__:(相当于java重写toString()方法)  
+<__main__.Student object at 0x109afb190>  
+#打印出来的是字符串，实现__str__  
+>>> class Student(object):  
+...     def __init__(self, name):  
+...         self.name = name  
+...     def __str__(self):  
+...         return 'Student object (name: %s)' % self.name  
+...  
+>>> print Student('Michael')  
+Student object (name: Michael)  
+  
+#__iter__：Python的for循环就会不断调用该迭代对象的next()方法拿到循环的下一个值(像list和tuple)  
+  
+class Student(object):  
+ def __init__(self):  
+        self.a, self.b = 0, 1 # 初始化两个计数器a，b  
+  
+    def __iter__(self):  
+        return self # 实例本身就是迭代对象，故返回自己  
+  
+    def next(self):  
+        self.a, self.b = self.b, self.a + self.b # 计算下一个值  
+        if self.a > 100000: # 退出循环的条件  
+            raise StopIteration();  
+        return self.a # 返回下一个值  
+  
+>>> for n in Fib():  
+...     print n  
+...  
+1  
+1  
+2  
+3  
+5  
+...  
+46368  
+75025  
+  
+#__getitem__：（可像list一样下标访问）  
+  
+class Sutdent(object):  
+    def __getitem__(self, n):  
+        a, b = 1, 1  
+        for x in range(n):  
+            a, b = b, a + b  
+        return a  
+  
+  
+#Python的内建模块itertools提供了非常有用的用于操作迭代对象的函数  
+  
+  
+#__getattr__：（动态返回一个属性、方法，实现后不存在就不报错了，如果存在则不会执行自己实现的）  
+class Student(object):  
+  
+    def __init__(self):  
+        self.name = 'Michael'  
+  
+    def __getattr__(self, attr):  
+        if attr=='score':  
+            return 99  
+  
+#函方法也可用  
+class Student(object):  
+  
+    def __getattr__(self, attr):  
+        if attr=='age':  
+            return lambda: 25  
+  
+>>> s.age()  
+25  
+  
+  
+__call__：  
+#任何类，只需要定义一个__call__()方法，就可以直接对实例进行调用。请看示例：  
+  
+class Student(object):  
+    def __init__(self, name):  
+        self.name = name  
+  
+    def __call__(self):  
+        print('My name is %s.' % self.name)  
+#调用方式如下：  
+  
+>>> s = Student('Michael')  
+>>> s()  
+My name is Michael.  
+  
+  
+>>> callable(Student())  
+True  
+  
+  
+type（）：  
+#运行时创建类/元类：  
+#动态语言和静态语言最大的不同，就是函数和类的定义，不是编译时定义的，而是运行时动态创建的。  
+>>> Hello = type('Hello', (object,), dict(hello=fn)) # 创建Hello class  
+>>> h = Hello()  
+>>> h.hello()  
+Hello, world.  
+#1，class的名称；  
+#2，继承的父类集合，注意Python支持多重继承，如果只有一个父类，别忘了tuple的单元素写法；  
+#3，class的方法名称与函数绑定，这里我们把函数fn绑定到方法名hello上。  
+  
+  
+#metaclass：元类  
+#metaclass是Python面向对象里最难理解，也是最难使用的魔术代码。正常情况下，你不会碰到需要使用metaclass的情况，  
+#所以，以下内容看不懂也没关系，因为基本上你不会用到。  
+  
+  
+  
+  
+#常用内建模块：  
+#namedtuple：  
+#看到(1, 2)，很难看出这个tuple是用来表示一个坐标的。  
+定义一个class又小题大做了  
+>>> from collections import namedtuple  
+>>> Point = namedtuple('Point', ['x', 'y'])  
+>>> p = Point(1, 2)  
+>>> p.x  
+1  
+>>> p.y  
+2  
+>>> isinstance(p, Point)  
+True  
+>>> isinstance(p, tuple)  
+True  
+  
+  
+  
+  
+#deque：  
+  
+#使用list存储数据时，按索引访问元素很快，但是插入和删除元素就很慢了，  
+#因为list是线性存储，数据量大的时候，插入和删除效率很低。  
+#deque是为了高效实现插入和删除操作的双向列表，适合用于队列和栈：  
+  
+>>> from collections import deque  
+>>> q = deque(['a', 'b', 'c'])  
+>>> q.append('x')  
+>>> q.appendleft('y')  
+>>> q  
+#deque(['y', 'a', 'b', 'c', 'x'])  
+#deque除了实现list的append()和pop()外，还支持appendleft()和popleft()，这样就可以非常高效地往头部添加或删除元素。  
+  
+  
+#defaultdict  
+#使用dict时，如果引用的Key不存在，就会抛出KeyError。如果希望key不存在时，返回一个默认值，就可以用defaultdict：  
+  
+>>> from collections import defaultdict  
+>>> dd = defaultdict(lambda: 'N/A')  
+>>> dd['key1'] = 'abc'  
+>>> dd['key1'] # key1存在  
+'abc'  
+>>> dd['key2'] # key2不存在，返回默认值  
+'N/A'  
+  
+OrderedDict  
+  
+#使用dict时，Key是无序的。在对dict做迭代时，我们无法确定Key的顺序。  
+#如果要保持Key的顺序，可以用OrderedDict：  
+>>> from collections import OrderedDict  
+>>> d = dict([('a', 1), ('b', 2), ('c', 3)])  
+>>> d # dict的Key是无序的  
+{'a': 1, 'c': 3, 'b': 2}  
+>>> od = OrderedDict([('a', 1), ('b', 2), ('c', 3)])  
+>>> od # OrderedDict的Key是有序的  
+OrderedDict([('a', 1), ('b', 2), ('c', 3)])  
+  
+  
+#OrderedDict可以实现一个FIFO（先进先出）的dict，当容量超出限制时，先删除最早添加的Key：  
+#Counter是一个简单的计数器，例如，统计字符出现的个数：  
+  
+  
+  
+#多进程：  
+#multiprocessing模块就是跨平台版本的多进程模块。  
+from multiprocessing import Process  
+import os  
+  
+# 子进程要执行的代码  
+def run_proc(name):  
+    print 'Run child process %s (%s)...' % (name, os.getpid())  
+  
+if __name__=='__main__':  
+    print 'Parent process %s.' % os.getpid()  
+    p = Process(target=run_proc, args=('test',))  
+    print 'Process will start.'  
+    p.start()  
+    p.join()  
+    print 'Process end.'  
+  
+#执行结果如下：  
+  
+Parent process 928.  
+Process will start.  
+Run child process test (929)...  
+Process end.  
+#创建子进程时，只需要传入一个执行函数和函数的参数，创建一个Process实例，用start()方法启动，这样创建进程比fork()还要简单。  
+#join()方法可以等待子进程结束后再继续往下运行（等），通常用于进程间的同步。  
+  
+  
+  
+Pool：  
+  
+#如果要启动大量的子进程，可以用进程池的方式批量创建子进程：  
+  
+from multiprocessing import Pool  
+import os, time, random  
+  
+def long_time_task(name):  
+    print 'Run task %s (%s)...' % (name, os.getpid())  
+    start = time.time()  
+    time.sleep(random.random() * 3)  
+    end = time.time()  
+    print 'Task %s runs %0.2f seconds.' % (name, (end - start))  
+  
+if __name__=='__main__':  
+    print 'Parent process %s.' % os.getpid()  
+    p = Pool()  
+    for i in range(5):  
+        p.apply_async(long_time_task, args=(i,))  
+    print 'Waiting for all subprocesses done...'  
+    p.close()  
+    p.join()  
+    print 'All subprocesses done.'  
+  
+  
+  
+#Process之间肯定是需要通信的，操作系统提供了很多机制来实现进程间的通信。Python的multiprocessing模块包装了底层的机制，提供了Queue、Pipes等多种方式来交换数据。  
+#我们以Queue为例，在父进程中创建两个子进程，一个往Queue里写数据，一个从Queue里读数据：  
+  
+from multiprocessing import Process, Queue  
+import os, time, random  
+  
+# 写数据进程执行的代码:  
+def write(q):  
+    for value in ['A', 'B', 'C']:  
+        print 'Put %s to queue...' % value  
+        q.put(value)  
+        time.sleep(random.random())  
+  
+# 读数据进程执行的代码:  
+def read(q):  
+    while True:  
+        value = q.get(True)  
+        print 'Get %s from queue.' % value  
+  
+if __name__=='__main__':  
+    # 父进程创建Queue，并传给各个子进程：  
+    q = Queue()  
+    pw = Process(target=write, args=(q,))  
+    pr = Process(target=read, args=(q,))  
+    # 启动子进程pw，写入:  
+    pw.start()  
+    # 启动子进程pr，读取:  
+    pr.start()  
+    # 等待pw结束:  
+    pw.join()  
+    # pr进程里是死循环，无法等待其结束，只能强行终止:  
+    pr.terminate()  
+  
+  
+  
+#Python的标准库提供了两个模块：thread和threading，thread是低级模块，  
+#threading是高级模块，对thread进行了封装。绝大多数情况下，我们只需要使用threading这个高级模块。  
+#启动一个线程就是把一个函数传入并创建Thread实例，然后调用start()开始执行：  
+  
+#线程：  
+import time, threading  
+  
+# 新线程执行的代码:  
+def loop():  
+    print 'thread %s is running...' % threading.current_thread().name  
+    n = 0  
+    while n < 5:  
+        n = n + 1  
+        print 'thread %s >>> %s' % (threading.current_thread().name, n)  
+        time.sleep(1)  
+    print 'thread %s ended.' % threading.current_thread().name  
+  
+print 'thread %s is running...' % threading.current_thread().name  
+t = threading.Thread(target=loop, name='LoopThread')  
+t.start()  
+t.join()  
+print 'thread %s ended.' % threading.current_thread().name  
+#执行结果如下：  
+  
+thread MainThread is running...  
+thread LoopThread is running...  
+thread LoopThread >>> 1  
+thread LoopThread >>> 2  
+thread LoopThread >>> 3  
+thread LoopThread >>> 4  
+thread LoopThread >>> 5  
+thread LoopThread ended.  
+  
+#线程枷锁：  
+balance = 0  
+lock = threading.Lock()  
+  
+def run_thread(n):  
+    for i in range(100000):  
+        # 先要获取锁:  
+        lock.acquire()  
+        try:  
+            # 放心地改吧:  
+            change_it(n)  
+        finally:  
+            # 改完了一定要释放锁:  
+            lock.release()  
+thread MainThread ended.  
+  
+  
+  
+import threading  
+  
+  
+  
+# 创建全局ThreadLocal对象:  
+  
+#全局变量local_school就是一个ThreadLocal对象，每个Thread对它都可以读写student属性，但互不影响。  
+#你可以把local_school看成全局变量，但每个属性如local_school.student都是线程的局部变量，可以任意读写而互不干扰，也不用管理锁的问题，ThreadLocal内部会处理。  
+#可以理解为全局变量local_school是一个dict，不但可以用local_school.student，还可以绑定其他变量，如local_school.teacher等等。  
+#ThreadLocal最常用的地方就是为每个线程绑定一个数据库连接，HTTP请求，用户身份信息等，这样一个线程的所有调用到的处理函数都可以非常方便地访问这些资源。  
+#local_school = threading.local()  
+  
+def process_student():  
+    print 'Hello, %s (in %s)' % (local_school.student, threading.current_thread().name)  
+  
+def process_thread(name):  
+    # 绑定ThreadLocal的student:  
+    local_school.student = name  
+    process_student()  
+  
+t1 = threading.Thread(target= process_thread, args=('Alice',), name='Thread-A')  
+t2 = threading.Thread(target= process_thread, args=('Bob',), name='Thread-B')  
+t1.start()  
+t2.start()  
+t1.join()  
+t2.join()  
+执行结果：  
+  
+Hello, Alice (in Thread-A)  
+Hello, Bob (in Thread-B)  
+  
+  
+  
+  
+#单元测试：  
+#需要引入Python自带的unittest模块，编写mydict_test.py如下：  
+import unittest  
+  
+from mydict import Dict  
+  
+class TestDict(unittest.TestCase):  
+  
+    def test_init(self):  
+        d = Dict(a=1, b='test')  
+        self.assertEquals(d.a, 1)  
+        self.assertEquals(d.b, 'test')  
+        self.assertTrue(isinstance(d, dict))  
+  
+  
+  
+    def test_attr(self):  
+        d = Dict()  
+        d.key = 'value'  
+        self.assertTrue('key' in d)  
+        self.assertEquals(d['key'], 'value')  
+  
+#以test开头的方法就是测试方法，测试时才会被执行  
+#一旦编写好单元测试，我们就可以运行单元测试。最简单的运行方式是在mydict_test.py的最后加上两行代码：  
+  
+if __name__ == '__main__':  
+    unittest.main()  
+  
+setUp与tearDown  
+  
+#可以在单元测试中编写两个特殊的setUp()和tearDown()方法。这两个方法会分别在每调用一个测试方法的前后分别被执行。  
+
+
+
+
+
+
