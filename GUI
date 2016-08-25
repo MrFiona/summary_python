@@ -7,6 +7,8 @@ Created on 2016年7月29日
 #-*-coding:utf-8-*-
 
 import os
+import time
+import threading
 import os.path
 from tkinter import *
 from tkinter.messagebox import *    
@@ -191,7 +193,20 @@ def create_toplevel():
 #     top.grab_set()
 #     top.focus_set()
 #     top.wait_window()   #等待销毁
+
+def print_i(value):
+    for i in range(1,value):
+        print('i:\t%s' %i)
+        time.sleep(1)
         
+#创建线程函数,解决GUI假死现象start
+def create_threading():
+    value = 100
+    t1 = threading.Thread(target=print_i, args=(value,))
+    t1.start()
+#     t1.join()   #去掉该语句即可以解决GUI界面假死现象
+#创建线程函数,解决GUI假死现象end
+
 def warn_info1():
     if e1.get() == '' or e1.get().isdigit() == False:
         askokcancel(title="yes or not?", message="are you sure the data is correctly?")
@@ -380,6 +395,11 @@ button3.grid(row=10, column=4)
 button1 = Button(root, text='点击创建顶级窗口', font=("黑体", 12), command=create_toplevel)
 button1.grid(row=12, column=2)
 #测试顶层窗口Toplevel组件 end
+
+#测试线程start
+button22 = Button(root, text='线程测试', font=("黑体", 12), command=create_threading)
+button22.grid(row=12, column=3)
+#测试线程end
 
 var = StringVar()
 var.set("True")
