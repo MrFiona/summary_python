@@ -1,3 +1,36 @@
+今天WPS For Linux Alpha 7发布了，首先感谢WPS团队的辛勤耕耘，论坛抢包子那个热闹啊，很期待明年的beta。
+但论坛抢包子有个问题，楼下跟帖的内容是所有人可见的（包括游客），于是乎就有大量的email地址暴露在大家面前。
+下面我将用Python试着抓取网页中的这些email地址，顺便练习一下Python的标准库。（老鸟请绕道）
+涉及到的库有http.client（处理HTTP）、re（正则表达式）、threading（多线程）。
+　　
+首先，要抓取网页内容，必须先拿到html页面。http.client.HTTPConnection就是用来做这个工作的。http.client.HTTPConnection的构造函数中
+，host指明web服务器地址，port指明端口（默认80）。
+其中以下几种形式的效果相同：
+>>> h1 = http.client.HTTPConnection('www.cwi.nl')
+>>> h2 = http.client.HTTPConnection('www.cwi.nl:80')
+>>> h3 = http.client.HTTPConnection('www.cwi.nl', 80)
+　　
+构造函数返回一个HTTPConnection对象，代表了当前这条http连接。然后就可以用这个HTTPConnection对象发送一个request，请求页面。
+request的四个参数method, url, body,  headers就不详说了，很容易理解。不过这里要注意的一点是，headers是个dict，只要将header里的属性和值
+分别以key:value的形式存入dict即可。另外就是如果要投递cookies，直接在headers里加就行。
+发送完request之后就可以用getresponse方法获得页面响应了。getresponse返回一个HTTPResponse对象，代表了http的一个response。
+这个HTTPResponse对象里包含了response的头、内容、状态码等内容。通过HTTPResponse的read方法就可以读出html页面了。
+注意Python 3里的read方法返回的是bytes对象，需要decode一下才能用于下面的正则表达式匹配。
+　　
+有了网页内容，接下来就可以做内容的解析了。Python有很多解析html页面元素的库，像BeautifulSoup、pyQuery、正则表达式等，这里我选择了正则表达式。
+关于正则表达式的语法可以参考下面两篇文章，讲得很详细：Python正则表达式操作指南，正则表达式30分钟入门教程。我主要讲一下Python的正则表达式模
+块re的用法。
+re模块使用正则表达式有两种用法，效果差不多：直接使用re中的函数、用过re.compile编译成一个regex对象后再使用。只是后面一种效率高一点。
+大体流程如下：
+通过search函数获得一个match对象，再通过这个match对象调用group/groups函数获得结果的分组。
+也可以用findall直接搜索pattern是否存在。
+　　
+由于单线程太慢，所以开多线程（threading模块）加速。这里主要通过threading.Thread来创建线程。threading.Thread的构造函数中，
+target为一个worker函数对象，线程的执行逻辑；args为传给worker函数的参数，用tupple表示；kwargs也可以用来传递参数给worker，
+只不过这是一个dict，存储 参数名:参数值 对。
+使用start方法启动创建的线程，join方法等待线程退出。由于这个程序不需要线程之间的同步，所以就没有介绍互斥量、信号量之类的同步机制，
+有需要的读者请参考官方文档。
+
 '''
 Created on 2016年9月6日
 
