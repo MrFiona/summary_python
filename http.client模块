@@ -15,7 +15,7 @@ def Parse(data, fp):
         match = pattern.search(line)  
         if(match):  
             email = match.group(0)  
-            print(email)  
+            print('email:',email)  
             fp.write(email + '\n')  
   
 def worker(begin, end, No):  
@@ -24,16 +24,17 @@ def worker(begin, end, No):
     url = '/thread-22351621-%d-1.html'  
     index = begin  
   
-    fp = open('email%02d.txt' % No, 'a')  
+    fp = open('email%02d.txt' % No, 'w')  
     while(index < end):  
         conn.request('GET', url % index)  
         try:  
             res = conn.getresponse()  
         except Exception:  
             continue  
+        fp.write(res.read().decode('utf-8'))
         print('Thread %d: %d, %s' % (No, res.status, url % index))  
         if(res.status == 200):  
-            Parse(res.read().decode('utf8'), fp)  
+            Parse(res.read().decode('utf-8'), fp)  
   
         index += 1  
   
