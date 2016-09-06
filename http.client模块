@@ -1,0 +1,48 @@
+'''
+Created on 2016年9月6日
+
+@author: apple
+'''
+import http.client  
+import re  
+import threading  
+  
+pattern = re.compile(r'(?<=<a href="mailto:)[\w\W]*(?=">)')  
+  
+def Parse(data, fp):  
+    lines = data.split('\r\n')  
+    for line in lines:  
+        match = pattern.search(line)  
+        if(match):  
+            email = match.group(0)  
+            print(email)  
+            fp.write(email + '\n')  
+  
+def worker(begin, end, No):  
+    print('Thread %d initiated.' % No)  
+    conn = http.client.HTTPConnection('bbs.wps.cn')  
+    url = '/thread-22351621-%d-1.html'  
+    index = begin  
+  
+    fp = open('email%02d.txt' % No, 'a')  
+    while(index < end):  
+        conn.request('GET', url % index)  
+        try:  
+            res = conn.getresponse()  
+        except Exception:  
+            continue  
+        print('Thread %d: %d, %s' % (No, res.status, url % index))  
+        if(res.status == 200):  
+            Parse(res.read().decode('utf8'), fp)  
+  
+        index += 1  
+  
+    fp.close()  
+  
+total = 10  
+step = 180 / total  
+threads = [threading.Thread(target=worker, args=(i * step, i + step, i)) for i in range(total)]  
+for thread in threads:  
+    thread.start()  
+for thread in threads:  
+    thread.join()  
