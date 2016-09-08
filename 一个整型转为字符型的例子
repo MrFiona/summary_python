@@ -1,0 +1,6 @@
+给你一字典a，如a={1:1,2:2,3:3}，输出字典a的key，以','链接，如‘1,2,3'。
+str_a = []
+for key,value in enumerate(a):
+    str_a.append(chr(key+48))
+str_b = ','.join(str_a)
+print(str_b)
