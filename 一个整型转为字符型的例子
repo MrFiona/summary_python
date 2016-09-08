@@ -1,6 +1,10 @@
 给你一字典a，如a={1:1,2:2,3:3}，输出字典a的key，以','链接，如‘1,2,3'。
 str_a = []
 for key,value in enumerate(a):
-    str_a.append(chr(key+48))
+    str_a.append(chr(key+48)) #单个字符，0-9
 str_b = ','.join(str_a)
 print(str_b)
+
+注意：python3中只有str转为int但是int不能转为str
+int('1232') --> 1232
+eval('1232') --> 1232
